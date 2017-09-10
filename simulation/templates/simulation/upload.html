@@ -1,0 +1,48 @@
+<html>
+  <head>
+  </head>
+  <body>
+<form action="/simulation/upload/" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <fieldset>
+    <legend> Required files </legend>
+    <div>
+      {{ form.smspec_file.errors }}
+      {{ form.smspec_file.label_tag }}
+      {{ form.smspec_file }}
+    </div>
+    <div>
+      {{ form.unsmry_file.errors }}
+      {{ form.unsmry_file.label_tag }}
+      {{ form.unsmry_file }}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend> Optional files </legend>
+    <div>
+      {{ form.grid_file.errors }}
+      {{ form.grid_file.label_tag }}
+      {{ form.grid_file }}
+    </div>
+    <div>
+      {{ form.restart_file.errors }}
+      {{ form.restart_file.label_tag }}
+      {{ form.restart_file }}
+    </div>
+    <div>
+      {{ form.init_file.errors }}
+      {{ form.init_file.label_tag }}
+      {{ form.init_file }}
+    </div>
+    <div>
+      {{ form.data_file.errors }}
+      {{ form.data_file.label_tag }}
+      {{ form.data_file }}
+    </div>
+  </fieldset>
+<input type="Submit" value="Submit">
+</form>
+
+</body>
+</html>

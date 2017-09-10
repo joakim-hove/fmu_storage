@@ -1,0 +1,31 @@
+<html>
+  <table>
+    <tr>
+      <th align="Left"> Summary: </th> <td> <a href="{% url "simulation.summary.view.detail" simulation.summary.id %}"> {{ simulation.summary }} </td>
+    </tr>
+    <tr>
+      <th align="left"> Data file: </th>
+      {% if simulation.data %}
+      <td> <a href="{% url "simulation.data_file.view.detail" simulation.data.id %}"> {{ simulation.data }} </td>
+      {% endif %}
+    </tr>
+    <tr>
+      <th align="left"> Grid: </th>
+      {% if simulation.grid %}
+      <td> <a href="{% url "simulation.grid.view.detail" simulation.grid.id %}"> {{ simulation.grid }} </td>
+      {% endif %}
+    </tr>
+    <tr>
+      <th align="left"> Init: </th>
+      {% if simulation.init %}
+      <td> <a href="{% url "simulation.init.view.detail" simulation.init.id %}"> {{ simulation.init }} </td>
+      {% endif %}
+    </tr>
+    <tr>
+      <th align="left"> Restart: </th>
+      {% if simulation.restart %}
+      <td> <a href="{% url "simulation.restart.view.detail" simulation.restart.id %}"> {{ simulation.restart }} </td>
+      {% endif %}
+    </tr>
+  </table>
+</html>
