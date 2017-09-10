@@ -1,0 +1,15 @@
+language: python
+python:
+  - "2.7"
+install:
+    - pip install -r requirements.txt
+
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=fmu_storage.settings
+    - DATABASE_URL=sqlite:////$TRAVIS_BUILD_DIR/db.sqlite
+    - STORAGE_ROOT=$TRAVIS_BUILD_DIR/storage
+
+
+script:
+  - python manage.py test
