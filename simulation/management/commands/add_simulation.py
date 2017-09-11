@@ -25,9 +25,9 @@ class Command(BaseCommand):
             summary = Summary.create(smspec_file, unsmry_file)
             simulation = Simulation.objects.create(summary=summary)
             for ext, method in [('EGRID', Simulation.add_grid),
-             ('UNRST', Simulation.add_restart),
-             ('INIT', Simulation.add_init),
-             ('json', Simulation.add_parameters)]:
+                                ('UNRST', Simulation.add_restart),
+                                ('INIT', Simulation.add_init),
+                                ('json', Simulation.add_parameters)]:
                 add_file(simulation, case, ext, method)
 
             self.stdout.write(self.style.SUCCESS('Successfully create simulation object %s:%d' % (case, simulation.id)))
