@@ -33,30 +33,34 @@ And then afterwards you can start a webserver on localhost with:
 
 
 ## URLs ##
-
+```
 /simulation/view/$ID/           : View a simulation - just a "summary" of the results available
 /simulation/upload/             : A web form to upload results.
-
+```
 
 Very simple views to look at summary, data, init, restart and grid files.
+```
 /simulation/summary/view/$ID/
 /simulation/data/view/$ID/
 /simulation/init/view/$ID/
 /simulation/restart/view/$ID/
 /simulation/grid/view/$ID/
-
+```
 
 Download files:
+```
 /simulation/data/download/$ID/
 /simulation/grid/download/$ID/
 /simulation/init/download/$ID/
 /simulation/restart/download/$ID/
+```
 
 API urls:
+```
 /api/simulation/summary/data/$ID/?key=FOPT&key=WWCT:OP_1&key=RPR:3&time_interval=1M
 /api/simulation/parameters/data/$ID/
 /api/simulation/upload/
-
+```
 
 ## Adding simulation results ##
 
