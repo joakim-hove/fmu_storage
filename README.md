@@ -62,6 +62,11 @@ API urls:
 /api/simulation/upload/
 ```
 
+Admin: auto generated DJango admin:
+```
+/amdin/
+```
+
 ## Adding simulation results ##
 
 You can add simulation results interactively with the management
