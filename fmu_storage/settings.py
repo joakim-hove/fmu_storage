@@ -27,7 +27,7 @@ SECRET_KEY = '3+hk)bu0vzgy8uozhw!r^^e#)fhaio*f56=n6=#l2_e1l9#we+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['devnull.statoil.no']
 
 # Application definition
 
