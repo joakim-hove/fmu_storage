@@ -62,6 +62,22 @@ API urls:
 /api/simulation/upload/
 ```
 
+For the `/api/simulation/summary/data/$ID/` url the query parameters are:
+
+key='FOPT' - this a valid summary key, you can have multiple of
+   these. You will get Http404 if you ask for a non-existing key,
+
+keys='F*' - this will expand to all keys matching the pattern 'F*'.
+
+time_interval=1M - this specifies the time resolution. It understands
+the strings 'D', 'M' and 'Y' for days, months and years respectively -
+with a numeric prefix. So the following query string will get the
+total oil prodction (FOPT) and all the watercuts (WWCT:*) sampled at 3
+month intervals:
+
+`key=FOPT&keys=WWCT:*&time_interval=6M`
+
+
 Admin: auto generated DJango admin:
 ```
 /amdin/

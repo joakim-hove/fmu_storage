@@ -26,11 +26,14 @@ class SummaryData(View):
 
         ecl_sum = summary.data( )
         sum_keywords = EclSumKeyWordVector(ecl_sum)
-        for key in request.GET.getlist("keys"):
+        for key in request.GET.getlist("key"):
             if key in ecl_sum:
-                sum_keywords.add_keywords( key )
+                sum_keywords.add_keyword( key )
             else:
                 raise Http404("No such key: %s" % key)
+
+        for key_pattern in request.GET.getlist("keys"):
+            sum_keywords.add_keywords( key_pattern )
 
         if "time_interval" in request.GET:
             try:

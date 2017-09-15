@@ -66,16 +66,29 @@ class SimulationTest(TestCase):
         self.assertEqual( response.status_code , 404 )
 
         url = reverse( "api.simulation.summary.data" , kwargs = {"id" : self.context.summary.id })
-        response = client.get( url , {"keys" : ["MISSING_KEY"]})
+        response = client.get( url , {"key" : ["MISSING_KEY"]})
         self.assertEqual( response.status_code , 404 )
 
         url = reverse( "api.simulation.summary.data" , kwargs = {"id" : self.context.summary.id })
-        response = client.get( url , {"keys" : ["FOPT","FOPR"]})
+        response = client.get( url , {"key" : ["FOPT","FOPR"]})
         self.assertEqual( response.status_code , 200 )
         data = json.loads( response.content )
         self.assertTrue( "data" in data )
         self.assertTrue( "time" in data )
+        values = data["data"]
+        self.assertIn( "FOPR" , values )
+        self.assertIn( "FOPT" , values )
 
+
+        url = reverse( "api.simulation.summary.data" , kwargs = {"id" : self.context.summary.id })
+        response = client.get( url , {"keys" : ["FOP*"]})
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads( response.content )
+        self.assertTrue( "data" in data )
+        self.assertTrue( "time" in data )
+        values = data["data"]
+        self.assertIn( "FOPR" , values )
+        self.assertIn( "FOPT" , values )
 
         url = reverse( "api.simulation.summary.data" , kwargs = {"id" : self.context.summary.id })
         response = client.get( url , {"keys" : ["FOPT","FOPR"], "time_interval" : "1X"})
