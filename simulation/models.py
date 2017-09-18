@@ -30,6 +30,7 @@ def make_file_field(cls, name, FILES):
 class BaseFile(Model):
     input_name = CharField( max_length = 132 )
     content = FileField( upload_to = "%Y/%m/%d" )
+    upload_time = DateTimeField( auto_now_add=True )
 
     def data(self):
         raise NotImplementedError("The data() method is not implemented in the base class")
