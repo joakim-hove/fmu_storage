@@ -43,6 +43,28 @@ class SimulationTest(TestCase):
                 summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" , self.context.group)
 
 
+    def test_api_view(self):
+        client = Client( )
+        url = reverse( "api.simulation.summary.keys" , kwargs = {"id" : 100000000 })
+        response = client.get( url )
+        self.assertEqual( response.status_code , 404 )
+
+        url = reverse( "api.simulation.summary.keys" , kwargs = {"id" : self.context.simulation.id })
+        response = client.get( url )
+        self.assertEqual( response.status_code , 200 )
+
+        response = client.get( url , {"pattern" : ["XXXX*"]})
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads( response.content )
+        self.assertEqual( len(data), 0 )
+
+        response = client.get( url )
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads( response.content )
+        self.assertEqual( len(data), 3 )
+
+
+
     def test_view(self):
         client = Client( )
         url = reverse( "simulation.view.detail" , kwargs = {"id" : self.context.simulation.id})

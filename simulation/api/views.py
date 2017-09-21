@@ -57,11 +57,29 @@ class SummaryData(View):
         result["data"] = data
         return JsonResponse( result )
 
+class SummaryKeys(View):
+    def get(self, request, id = None):
+        if id is None:
+            raise HttpResponseServerError("NO id supplied for summary")
 
+        try:
+            summary = Summary.objects.get( pk = int(id) )
+        except Summary.DoesNotExist:
+            raise Http404("No summary with id:%s" % id)
+
+        ecl_sum = summary.data( )
+        if "pattern" in request.GET:
+            keys = []
+            for pattern in request.GET.getlist("pattern"):
+                keys += ecl_sum.keys( pattern = pattern )
+        else:
+            keys = ecl_sum.keys( )
+
+        return JsonResponse( [ s for s in keys ] , safe = False)
 
 class Parameters(View):
 
-    def get(self, requet, id = None):
+    def get(self, request, id = None):
         if id is None:
             raise HttpResponseServerError("NO id supplied for summary")
 
