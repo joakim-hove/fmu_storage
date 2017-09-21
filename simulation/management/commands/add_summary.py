@@ -1,3 +1,5 @@
+import grp
+import os
 import os.path
 from django.core.management.base import BaseCommand, CommandError
 from simulation.models import *
@@ -16,5 +18,8 @@ class Command(BaseCommand):
                 raise CommandError('No suche file: %s' % smspec_file)
             if not os.path.isfile(unsmry_file):
                 raise CommandError('No suche file: %s' % unsmry_file)
-            summary = Summary.create(smspec_file, unsmry_file)
+
+            stat = os.stat( smspec_file )
+            group = grp.getgrgid( stat.st_gid )[0]
+            summary = Summary.create(smspec_file, unsmry_file, group)
             self.stdout.write(self.style.SUCCESS('Successfully create summary object %s:%d' % (case, summary.id)))

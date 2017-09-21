@@ -189,8 +189,8 @@ class Simulation(Model):
         return d
 
 
-    def add_grid(self, grid_file):
-        self.grid = GridFile.create( grid_file )
+    def add_grid(self, grid_file, owner_group):
+        self.grid = GridFile.create( grid_file , owner_group)
         self.save( )
 
 
@@ -210,12 +210,12 @@ class Simulation(Model):
         for key,value in parameters.items():
             self.add_parameters(key, value)
 
-    def add_restart(self, restart_file):
-        self.restart = RestartFile.create( restart_file )
+    def add_restart(self, restart_file, owner_group):
+        self.restart = RestartFile.create( restart_file , owner_group )
         self.save( )
 
-    def add_init(self, init_file):
-        self.init = InitFile.create( init_file )
+    def add_init(self, init_file, owner_group):
+        self.init = InitFile.create( init_file , owner_group)
         self.save( )
 
 
