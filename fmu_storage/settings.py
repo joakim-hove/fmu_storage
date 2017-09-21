@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import dj_database_url
+from group_access import GroupAccess
+GAC = GroupAccess( )
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'simulation',
+    'ensemble'
 ]
 
 MIDDLEWARE = [
@@ -125,3 +128,5 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join( os.environ.get("STORAGE_ROOT"), "fmu_storage" )
 if MEDIA_ROOT is None:
     raise Exception("The environment variable STORAGE_ROOT must be set")
+
+

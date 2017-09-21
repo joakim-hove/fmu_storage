@@ -40,7 +40,7 @@ class SimulationTest(TestCase):
                 f.write("Hei ...")
 
             with self.assertRaises(IOError):
-                summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" )
+                summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" , self.context.group)
 
 
     def test_view(self):
@@ -102,7 +102,11 @@ class SimulationTest(TestCase):
             count0 = ObjectCount( )
             response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
                                            "unsmry_file" : open("CASE.UNSMRY")})
+            self.assertEqual( response.status_code , 200 )
 
+            response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
+                                           "unsmry_file" : open("CASE.UNSMRY"),
+                                           "group" : self.context.group })
             self.assertEqual( response.status_code , 302 )
             count1 = ObjectCount( )
             self.assertEqual( 1 , count1.simulation - count0.simulation )
@@ -111,7 +115,8 @@ class SimulationTest(TestCase):
                 f.write("Hell ...")
 
             response = client.post( url , {"smspec_file" : open("file"),
-                                           "unsmry_file" : open("CASE.UNSMRY")})
+                                           "unsmry_file" : open("CASE.UNSMRY"),
+                                           "group" : self.context.group })
             self.assertEqual( response.status_code , 200 )
 
             count2 = ObjectCount( )
@@ -120,7 +125,8 @@ class SimulationTest(TestCase):
             # Invalid grid
             response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
                                            "unsmry_file" : open("CASE.UNSMRY"),
-                                           "grid_file"   : open("CASE.UNSMRY")})
+                                           "grid_file"   : open("CASE.UNSMRY"),
+                                           "group" : self.context.group })
 
             count2 = ObjectCount( )
             self.assertEqual( count1 , count2 )
@@ -129,7 +135,8 @@ class SimulationTest(TestCase):
             self.context.grid.save_EGRID("CASE.EGRID")
             response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
                                            "unsmry_file" : open("CASE.UNSMRY"),
-                                           "grid_file"   : open("CASE.EGRID")})
+                                           "grid_file"   : open("CASE.EGRID"),
+                                           "group" : self.context.group })
 
             count3 = ObjectCount( )
             self.assertEqual( count3 - count2 , Count( simulation = 1 , summary = 1 , grid = 1))
@@ -146,14 +153,16 @@ class SimulationTest(TestCase):
             url = reverse( "api.simulation.upload")
             response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
                                            "unsmry_file" : open("CASE.UNSMRY"),
-                                           "grid_file"   : open("CASE.EGRID")})
+                                           "grid_file"   : open("CASE.EGRID"),
+                                           "group" : self.context.group })
             self.assertEqual( response.status_code , 200 )
 
 
             url = reverse( "api.simulation.upload")
             response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
                                            "unsmry_file" : open("CASE.UNSMRY"),
-                                           "grid_file"   : open("CASE.UNSMRY")})
+                                           "grid_file"   : open("CASE.UNSMRY"),
+                                           "group" : self.context.group })
             self.assertEqual( response.status_code , 400 )
 
 

@@ -8,3 +8,4 @@ class UploadForm(Form):
     restart_file = FileField( required = False )
     grid_file = FileField( required = False )
     data_file = FileField( required = False )
+    group = CharField( max_length = 32 )

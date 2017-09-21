@@ -1,3 +1,7 @@
+import getpass
+import os
+import grp
+
 from ecl.ecl import EclGrid, EclGridGenerator, EclSum, openFortIO, EclFile
 from ecl.test import TestAreaContext
 from ecl.test.ecl_mock import createEclSum
@@ -27,11 +31,12 @@ class TestContext(object):
                             func_table = {"FOPT" : fopt,
                                           "FOPR" : fopr ,
                                           "FGPT" : fgpt })
-
+        self.user = getpass.getuser()
+        self.group = grp.getgrgid( os.getgid( ) )[0]
         self.case = case
         with TestAreaContext("summary"):
             case.fwrite( )
-            self.summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" )
+            self.summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" , self.group )
 
         self.simulation = Simulation.create( summary = self.summary )
         self.grid = EclGridGenerator.create_rectangular( (10,10,10),(1,1,1) )

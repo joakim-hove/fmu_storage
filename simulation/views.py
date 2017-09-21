@@ -17,18 +17,19 @@ class UploadSimulation(View):
 
         form = UploadForm( request.POST , request.FILES)
         if form.is_valid():
+            group = request.POST["group"]
             try:
                 with transaction.atomic():
-                    unsmry_file = BaseFile.form_create( request.FILES.get("unsmry_file") )
-                    smspec_file = BaseFile.form_create( request.FILES.get("smspec_file") )
+                    unsmry_file = BaseFile.form_create( request.FILES.get("unsmry_file"), group )
+                    smspec_file = BaseFile.form_create( request.FILES.get("smspec_file"), group )
                     ecl_sum = EclSum.load( smspec_file.path(), unsmry_file.path() )
                     summary = Summary.objects.create( unsmry_file = unsmry_file,
                                                       smspec_file = smspec_file)
 
-                    grid = GridFile.form_create( request.FILES.get("grid_file") )
-                    init = InitFile.form_create( request.FILES.get("init_file") )
-                    data = DataFile.form_create( request.FILES.get("data_file") )
-                    restart = RestartFile.form_create( request.FILES.get("restart_file") )
+                    grid = GridFile.form_create( request.FILES.get("grid_file"), group )
+                    init = InitFile.form_create( request.FILES.get("init_file"), group )
+                    data = DataFile.form_create( request.FILES.get("data_file"), group )
+                    restart = RestartFile.form_create( request.FILES.get("restart_file"), group )
 
                     simulation = Simulation.objects.create( summary = summary ,
                                                             grid = grid,

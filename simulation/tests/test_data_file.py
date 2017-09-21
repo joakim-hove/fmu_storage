@@ -12,19 +12,18 @@ from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 
 from simulation.models import *
-
+from .context import TestContext
 
 class DataFileTest(TestCase):
 
     def setUp(self):
-        pass
+        self.context = TestContext( )
 
     def test_url(self):
         with self.assertRaises(IOError):
-            data_file = DataFile.create( "file/dose/not/exist")
+            data_file = DataFile.create( "file/dose/not/exist", self.context.group )
 
-        data_file = DataFile.create( os.path.join( os.path.dirname( __file__ ) , "data" , "SPE1.DATA"))
-
+        data_file = DataFile.create( os.path.join( os.path.dirname( __file__ ) , "data" , "SPE1.DATA"), self.context.group)
         client = Client( )
         url = reverse( "simulation.data_file.view.detail" , kwargs = {"id" : 100000})
         response = client.get( url )

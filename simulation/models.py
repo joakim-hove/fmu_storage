@@ -9,7 +9,7 @@ from django.db.models.signals import post_delete, pre_delete
 from django.dispatch.dispatcher import receiver
 from django.db.models import *
 from django.db import IntegrityError
-
+from django.conf import settings
 
 def make_file_field(cls, name, FILES):
     if name in FILES:
@@ -31,6 +31,8 @@ class BaseFile(Model):
     input_name = CharField( max_length = 132 )
     content = FileField( upload_to = "%Y/%m/%d" )
     upload_time = DateTimeField( auto_now_add=True )
+    owner_group = CharField( max_length = 32 , default = None )
+
 
     def data(self):
         raise NotImplementedError("The data() method is not implemented in the base class")
@@ -48,12 +50,13 @@ class BaseFile(Model):
 
 
     @classmethod
-    def form_create(cls, form_field):
+    def form_create(cls, form_field, owner_group):
         if form_field is None:
             return None
 
         instance = cls.objects.create( content = form_field,
-                                       input_name = form_field.name )
+                                       input_name = form_field.name,
+                                       owner_group = owner_group )
         if instance.is_valid( ):
             return instance
         else:
@@ -68,9 +71,9 @@ class InitFile(BaseFile):
         return EclFile( self.path() )
 
     @classmethod
-    def create(cls,filename):
+    def create(cls,filename, owner_group):
         ecl_file = EclFile( filename )
-        init_file = InitFile( )
+        init_file = InitFile( owner_group = owner_group)
         with open(filename, "r") as f:
             init_file.content.save( os.path.basename( filename ), File(f))
         return init_file
@@ -83,9 +86,9 @@ class RestartFile(BaseFile):
 
 
     @classmethod
-    def create(cls,filename):
+    def create(cls,filename,owner_group):
         ecl_file = EclFile( filename )
-        restart_file = RestartFile( )
+        restart_file = RestartFile( owner_group = owner_group)
         with open(filename, "r") as f:
             restart_file.content.save( os.path.basename( filename ), File(f))
         return restart_file
@@ -98,8 +101,8 @@ class DataFile(BaseFile):
 
 
     @classmethod
-    def create(cls, filename):
-        data_file = DataFile(  )
+    def create(cls, filename, owner_group):
+        data_file = DataFile( owner_group = owner_group )
         with open(filename, "r") as f:
             data_file.content.save( os.path.basename( filename ), File(f))
         return data_file
@@ -119,9 +122,9 @@ class GridFile(BaseFile):
             return False
 
     @classmethod
-    def create(cls, filename):
+    def create(cls, filename, owner_group):
         g = EclGrid( filename )
-        grid = GridFile(  )
+        grid = GridFile( owner_group = owner_group )
         with open(filename, "r") as f:
             grid.content.save( os.path.basename( filename ), File(f))
         return grid
@@ -139,21 +142,21 @@ class Summary(Model):
 
 
     @classmethod
-    def create(self, smspec_file, unsmry_file):
+    def create(self, smspec_file, unsmry_file, owner_group):
         ecl_sum = EclSum.load( smspec_file, unsmry_file )
         smspec_name = os.path.basename( smspec_file )
         unsmry_name = os.path.basename( unsmry_file )
 
-        smspec = BaseFile( input_name = smspec_name )
+        smspec = BaseFile( input_name = smspec_name, owner_group = owner_group)
         with open(smspec_file, "r") as f:
             smspec.content.save( smspec_name , File(f))
 
-        unsmry = BaseFile( input_name = unsmry_name)
+        unsmry = BaseFile( input_name = unsmry_name, owner_group = owner_group)
         with open(unsmry_file, "r") as f:
             unsmry.content.save( unsmry_name , File(f))
 
         summary = Summary.objects.create( unsmry_file = unsmry,
-                                          smspec_file = smspec )
+                                          smspec_file = smspec)
         return summary
 
 

@@ -11,6 +11,7 @@ from django.core.files import File
 from django.test import TestCase, Client, override_settings
 
 from simulation.models import *
+from .context import TestContext
 
 def fopr(days):
     return days
@@ -27,16 +28,17 @@ def fgpt(days):
 class EclFileTest(TestCase):
 
     def setUp(self):
-        pass
+        self.context = TestContext( )
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
     def test_create(self):
         name = tempfile.NamedTemporaryFile( )
 
-        f = BaseFile( input_name = "NameX" )
+        len0 = len(BaseFile.objects.all())
+        f = BaseFile( input_name = "NameX" , owner_group = self.context.group)
         f.content.save( "input-name" , ContentFile("Content"))
-
-        self.assertEqual( len(BaseFile.objects.all()) , 1 )
+        len1 = len(BaseFile.objects.all())
+        self.assertEqual(len1 - len0, 1 )
 
         with self.assertRaises(NotImplementedError):
             f.data( )
@@ -46,11 +48,15 @@ class EclFileTest(TestCase):
 
 class GridFileTest(TestCase):
 
+    def setUp(self):
+        self.context = TestContext( )
+
+
     def test_create(self):
         grid = EclGridGenerator.create_rectangular( (10,10,10) , (1,1,1))
         with TestAreaContext( "grid"):
             grid.save_EGRID( "TEST.EGRID")
-            f = GridFile( input_name = "TEST.EGRID")
+            f = GridFile( input_name = "TEST.EGRID", owner_group = self.context.group)
             with open("TEST.EGRID") as grid_file:
                 f.content.save( "TEST.EGRID" , File( grid_file ))
 
@@ -60,6 +66,9 @@ class GridFileTest(TestCase):
 
 
 class SummaryFileTest(TestCase):
+
+    def setUp(self):
+        self.context = TestContext( )
 
     def test_create(self):
         length = 100
@@ -73,15 +82,15 @@ class SummaryFileTest(TestCase):
 
         with TestAreaContext("summary"):
             case.fwrite( )
-            summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" )
+            summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" , self.context.group )
             ecl_sum = summary.data( )
             self.assertTrue( isinstance( ecl_sum , EclSum ))
 
             with self.assertRaises(IOError):
-                sum = Summary.create("CASE_DOES_NOT_EXIST" , "CASE.UNSMRY")
+                sum = Summary.create("CASE_DOES_NOT_EXIST" , "CASE.UNSMRY", self.context.group)
 
             with self.assertRaises(IOError):
-                sum = Summary.create("CASE.SMSPEC" , "CASE.UNSMRY_XXX")
+                sum = Summary.create("CASE.SMSPEC" , "CASE.UNSMRY_XXX", self.context.group)
 
         sim = Simulation.objects.create( summary = summary )
 
