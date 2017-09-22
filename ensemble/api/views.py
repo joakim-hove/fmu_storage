@@ -12,9 +12,10 @@ class Create(View):
         try:
             name = request.POST.get("name")
             iteration = int(request.POST.get("iteration"))
+            id = request.POST.get("id")
             ensemble = Ensemble.objects.create( name = name,
-                                                iteration = iteration )
-
-            return HttpResponse( str(ensemble.id) )
-        except:
-            return HttpResponse( str(error), status = 400 )
+                                                iteration = iteration ,
+                                                id = id )
+            return HttpResponse( ensemble.id )
+        except Exception as exc:
+            return HttpResponse( str(exc), status = 400 )

@@ -2,13 +2,13 @@ import tempfile
 import os.path
 import json
 
-from django.test import TestCase, Client
+from django.test import TransactionTestCase, TestCase, Client
 from django.urls import reverse
 
 from ensemble.models import *
 from simulation.tests.context import TestContext as SimulationContext
 
-class EnsembleTest(TestCase):
+class EnsembleTest(TransactionTestCase):
 
 
     def setUp(self):
@@ -16,7 +16,8 @@ class EnsembleTest(TestCase):
 
     def test_create(self):
         ens = Ensemble.objects.create( iteration = 0,
-                                       name = "My ensemble")
+                                       name = "My ensemble",
+                                       id = "MyEnsemble" )
 
         self.assertEqual( len(ens), 0 )
 
@@ -35,7 +36,14 @@ class EnsembleTest(TestCase):
         url = reverse( "api.ensemble.create")
         response = client.post( url , {"name" : "My ensemble",
                                        "iteration" : 0})
+        self.assertEqual( response.status_code , 400 )
+
+        response = client.post( url , {"name" : "My ensemble",
+                                       "iteration" : 0,
+                                       "id" : "SecretID" })
+        print response.content
         self.assertEqual( response.status_code , 200 )
-        ens_id = int( response.content )
+
+        ens_id = response.content
         ens = Ensemble.objects.get( pk = ens_id )
 
