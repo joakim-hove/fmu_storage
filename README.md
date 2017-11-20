@@ -32,6 +32,44 @@ And then afterwards you can start a webserver on localhost with:
     ./manage.py runserver
 
 
+## Configure postgres ##
+
+Change identity to user `posgtgres`:
+
+   ```bash
+   cmd% sudo su - postgres
+   ```
+
+2. Create a new user (role):
+
+   ```bash
+   cmd% createuser fmu-storage -P
+   Enter password for new role: <password>
+   Enter it again: <password>
+   ```
+
+   As indicated the `createuser` program will prompt for a password.
+
+3. Create a new database - owned by the new user:
+
+   ```bash
+   cmd% createdb fmu-storage --owner=fmu-storage
+   ```
+
+After these steps you should have made a database with name
+`fmu-storage` and user with credentials `(fmu-storge,
+password)`. These three values should be part of the `DATABASE_URL`
+connection string - see the section about environment variables. Log
+out of the `postgres` account and test the connection:
+
+```bash
+bash% psql fmu-storage -U fmu-storage  -h localhost
+```
+
+To actually get contact to the postgres database server you probably also have
+to configure access through the `pg_hba.conf` file.
+
+
 ## URLs ##
 ```
 /simulation/view/$ID/           : View a simulation - just a "summary" of the results available

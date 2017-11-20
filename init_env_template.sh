@@ -14,8 +14,10 @@
 export DJANGO_SETTINGS_MODULE=fmu_storage.settings
 
 
-# This should be a database connection string, the string will be
-# parsed by dj_database_url.parse( ) function.
+# This should be a database connection string, the string will be parsed by
+# dj_database_url.parse( ) function. See the documentation here:
+# https://github.com/kennethreitz/dj-database-url for the syntax to for
+# different databases. The example below will connect to a sqlite database:
 export DATABASE_URL="sqlite:///fmu_storage.sqlite"
 
 
