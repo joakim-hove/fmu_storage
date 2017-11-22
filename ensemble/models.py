@@ -6,7 +6,7 @@ from simulation.models import *
 
 
 class Ensemble(Model):
-    id = CharField( max_length = 256, primary_key = True, default = None)
+    ext_id = CharField( max_length = 256, unique = True, default = None)
     iteration = IntegerField("Iteration", default = 0 )
     name = CharField( max_length = 256 )
     creation_time = DateTimeField( auto_now_add=True )

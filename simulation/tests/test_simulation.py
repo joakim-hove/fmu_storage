@@ -166,13 +166,16 @@ class SimulationTest(TestCase):
 
     def test_api_post(self):
         client = Client( )
-        url = reverse( "simulation.upload.view")
         with TestAreaContext("summary"):
             self.context.case.fwrite( )
             self.context.grid.save_EGRID("CASE.EGRID")
             count0 = ObjectCount( )
-
             url = reverse( "api.simulation.upload")
+            response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
+                                           "unsmry_file" : open("CASE.UNSMRY"),
+                                           "grid_file"   : open("CASE.EGRID")})
+            self.assertEqual( response.status_code , 403 )
+
             response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
                                            "unsmry_file" : open("CASE.UNSMRY"),
                                            "grid_file"   : open("CASE.EGRID"),
