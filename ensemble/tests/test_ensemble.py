@@ -19,6 +19,7 @@ class EnsembleTest(TransactionTestCase):
     def test_create(self):
         ens = Ensemble.objects.create( iteration = 0,
                                        name = "My ensemble",
+                                       user = "user",
                                        ext_id = "MyEnsemble" )
 
         self.assertEqual( len(ens), 0 )
@@ -37,12 +38,19 @@ class EnsembleTest(TransactionTestCase):
         client = Client( )
         url = reverse( "api.ensemble.get_or_create")
         response = client.post( url , {"name" : "My ensemble",
-                                       "iteration" : 0})
+                                       "iteration" : 0,
+                                       "user" : "xyz"})
         self.assertEqual( response.status_code , 400 )
 
         response = client.post( url , {"name" : "My ensemble",
                                        "iteration" : 0,
-                                       "ext_id" : "SecretID" })
+                                       "ext_id" : "SecretID"})
+        self.assertEqual( response.status_code , 400 )
+
+        response = client.post( url , {"name" : "My ensemble",
+                                       "iteration" : 0,
+                                       "ext_id" : "SecretID",
+                                       "user" : "bjarne"})
         self.assertEqual( response.status_code , 200 )
 
         ens_id = response.content
@@ -57,6 +65,7 @@ class EnsembleTest(TransactionTestCase):
     def test_realisation_api(self):
         ens = Ensemble.objects.create( iteration = 0,
                                        name = "My ensemble",
+                                       user = "user",
                                        ext_id = "MyEnsemble" )
 
         client = Client()
@@ -72,6 +81,7 @@ class EnsembleTest(TransactionTestCase):
     def test_simulation_api(self):
         ens = Ensemble.objects.create( iteration = 0,
                                        name = "My ensemble",
+                                       user = "user",
                                        ext_id = "MyEnsemble" )
 
         client = Client()
@@ -100,4 +110,22 @@ class EnsembleTest(TransactionTestCase):
             real_id = int(response.content)
             real = Realisation.objects.get( pk = real_id )
 
+
+    def test_ensemble_view(self):
+        ens = Ensemble.objects.create( iteration = 0,
+                                       name = "MyEnsemble",
+                                       user = "user",
+                                       ext_id = "adfa" )
+        client = Client()
+        url = reverse("ensemble.list_view")
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        url = reverse("ensemble.detail_view", kwargs = {"id" : 100000})
+        response = client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+        url = reverse("ensemble.detail_view", kwargs = {"id" : ens.id})
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
 

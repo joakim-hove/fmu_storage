@@ -6,8 +6,8 @@ from django.shortcuts import render
 from django.db import transaction
 from django.views import View
 from django.forms import ValidationError
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, HttpResponseServerError,Http404
 from django.urls import reverse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, HttpResponseServerError,Http404
 
 from simulation.models import *
 

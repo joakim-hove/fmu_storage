@@ -10,6 +10,7 @@ class Ensemble(Model):
     iteration = IntegerField("Iteration", default = 0 )
     name = CharField( max_length = 256 )
     creation_time = DateTimeField( auto_now_add=True )
+    user = CharField( max_length = 32, default = None)
 
     def size(self):
         return len(Realisation.objects.filter( ensemble = self ))

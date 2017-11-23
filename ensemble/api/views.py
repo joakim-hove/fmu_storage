@@ -21,8 +21,10 @@ class GetOrCreate(View):
         try:
             name = request.POST.get("name")
             iteration = int(request.POST.get("iteration"))
+            user = request.POST.get("user")
             ensemble = Ensemble.objects.create( name = name,
                                                 iteration = iteration ,
+                                                user = user,
                                                 ext_id = ext_id )
             return HttpResponse( ensemble.id )
         except Exception as exc:

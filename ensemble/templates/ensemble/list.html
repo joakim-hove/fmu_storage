@@ -1,0 +1,29 @@
+<html>
+    <head>
+    </head>
+
+    <body>
+        <table>
+            <tr>
+                <th>
+                   Name
+                </th>
+                <th>
+                   Created
+                </th>
+                <th>
+                    Iteration
+                </th>
+                <th>User</th>
+            </tr>
+            {% for ens in ensemble_list %}
+            <tr>
+                <td><a href="{???}"> {{ ens.name }} </a> </td>
+                <td>{{ ens.creation_time }}</td>
+                <td>{{ ens.iteration }}</td>
+                <td>{{ ens.user }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

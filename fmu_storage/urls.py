@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.conf.urls import url,include
 
 import simulation.urls
+import ensemble.urls
 import api_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^simulation/", include(simulation.urls)),
+    url(r"^ensemble/", include(ensemble.urls)),
     url(r"^api/", include(api_urls))
 ]
