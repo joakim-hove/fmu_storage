@@ -11,10 +11,11 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 settings_file = "fmu_settings.json"
-with open(settings_file) as fileH:
-    settings = json.load(fileH)
+if os.path.isfile(settings_file):
+    with open(settings_file) as fileH:
+        settings = json.load(fileH)
 
-for key,value in settings.iteritems():
-    os.environ[key] = value
+    for key,value in settings.iteritems():
+        os.environ[key] = value
 
 application = get_wsgi_application()

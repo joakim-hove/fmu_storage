@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'simulation',
-    'ensemble'
+    'ensemble',
+    'fmu_storage'
 ]
 
 MIDDLEWARE = [
