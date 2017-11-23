@@ -2,3 +2,4 @@ Django==1.11
 dj-database-url
 numpy
 six
+whitenoise

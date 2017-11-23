@@ -29,7 +29,10 @@ SECRET_KEY = '3+hk)bu0vzgy8uozhw!r^^e#)fhaio*f56=n6=#l2_e1l9#we+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['devnull.statoil.no']
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = ['devnull.statoil.no']
 
 # Application definition
 
@@ -46,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -129,4 +133,4 @@ MEDIA_ROOT = os.path.join( os.environ.get("STORAGE_ROOT"), "fmu_storage" )
 if MEDIA_ROOT is None:
     raise Exception("The environment variable STORAGE_ROOT must be set")
 
-
+STATIC_ROOT = os.path.join( BASE_DIR , "staticfiles")
