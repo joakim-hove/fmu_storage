@@ -17,7 +17,17 @@ class EnsembleDetail(View):
 
     def get(self, request, id):
         try:
-            ensemble = Ensemble.objects.get( pk=int(id) )
+            ensemble = Ensemble.objects.get(pk=int(id))
             return render(request, "ensemble/view.html", {"ensemble" : ensemble})
         except Ensemble.DoesNotExist:
-            return HttpResponse("No such ensemble: %s" % id, status = 404) 
+            return HttpResponse("No such ensemble: %s" % id, status=404)
+
+
+class RealisationDetail(View):
+
+    def get(self, request, id):
+        try:
+            realisation = Realisation.objects.get(pk=int(id))
+            return render(request, "ensemble/realisation_view.html", {"realisation" : realisation})
+        except Realisation.DoesNotExist:
+            return HttpResponse("No such realisation: %s" % id, status=404)

@@ -15,13 +15,20 @@ class Ensemble(Model):
     def size(self):
         return len(Realisation.objects.filter( ensemble = self ))
 
+    def __unicode__(self):
+        return self.name
 
     def __len__(self):
         return self.size()
 
+
+    def realisations(self):
+        return Realisation.objects.filter( ensemble = self )
 
 class Realisation(Model):
     iens = IntegerField("Realisation")
     simulation = OneToOneField( Simulation , on_delete = CASCADE )
     ensemble = ForeignKey( Ensemble , on_delete = CASCADE )
 
+    def __unicode__(self):
+        return "%s:%d" % (self.ensemble.name, self.iens)

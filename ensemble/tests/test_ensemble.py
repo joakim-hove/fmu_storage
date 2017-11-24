@@ -128,4 +128,9 @@ class EnsembleTest(TransactionTestCase):
         url = reverse("ensemble.detail_view", kwargs = {"id" : ens.id})
         response = client.get(url)
         self.assertEqual(response.status_code, 200)
+        
+        url = reverse("ensemble.realisation.detail_view", kwargs = {"id" : 100000})
+        response = client.get(url)
+        self.assertEqual(response.status_code, 404)
+
 

@@ -18,7 +18,7 @@
             </tr>
             {% for ens in ensemble_list %}
             <tr>
-                <td><a href="{???}"> {{ ens.name }} </a> </td>
+                <td><a href="{% url 'ensemble.detail_view' id=ens.id %}"> {{ ens.name }} </a> </td>
                 <td>{{ ens.creation_time }}</td>
                 <td>{{ ens.iteration }}</td>
                 <td>{{ ens.user }}</td>

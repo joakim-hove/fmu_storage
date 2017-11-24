@@ -5,7 +5,28 @@
     <body>
         {{ ensemble }}
         <table>
-            
+            <tr>
+                <th>Name</th>
+                <td>{{ ensemble.name }} </td>
+            </tr>
+             <tr>
+                <th>ID</th>
+                <td>{{ ensemble.id }} / {{ ensemble.ext_id }} </td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ ensemble.creation_time }} </td>
+            </tr>
+            <tr>
+                <th>User</th>
+                <td> {{ ensemble.user }} </td>
+            </tr>
         </table>
-   </body>
+        Realisations: <div>
+            {% for real in ensemble.realisations %}
+            <a href="{% url 'ensemble.realisation.detail_view' id=real.id %}"> {{ real.id }}</a>&nbsp; 
+            {% endfor %}
+        </div> 
+
+    </body>
 </html>

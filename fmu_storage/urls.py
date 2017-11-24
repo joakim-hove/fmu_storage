@@ -21,9 +21,12 @@ import simulation.urls
 import ensemble.urls
 import api_urls
 
+from ensemble.views import EnsembleList
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^simulation/", include(simulation.urls)),
     url(r"^ensemble/", include(ensemble.urls)),
-    url(r"^api/", include(api_urls))
+    url(r"^api/", include(api_urls)),
+    url(r"^$", EnsembleList.as_view(), name = "root")
 ]
