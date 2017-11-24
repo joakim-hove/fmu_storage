@@ -3,3 +3,4 @@ dj-database-url
 numpy
 six
 whitenoise
+requests

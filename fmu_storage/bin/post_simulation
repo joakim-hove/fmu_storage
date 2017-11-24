@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+import sys
+import os
+import grp
+import requests
+
+
+host = "http://127.0.0.1:8000"
+url = "/simulation/upload/"
+
+
+def file_group(fname):
+    stat = os.stat( fname )
+    group = grp.getgrgid( stat.st_gid )[0] 
+    return group
+
+
+def make_url(url):
+    full_url = "%s%s" % (host , url)
+    return full_url
+
+case = sys.argv[1]
+smspec_file = "%s.SMSPEC" % case
+unsmry_file = "%s.UNSMRY" % case
+status = requests.post( make_url(url),
+                        files = {"smspec_file" : open(smspec_file),
+                                 "unsmry_file" : open(unsmry_file)},
+                        data = {"group" : file_group(smspec_file)})
+print status
+
+
