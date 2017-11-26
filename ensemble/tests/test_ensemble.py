@@ -69,7 +69,7 @@ class EnsembleTest(TransactionTestCase):
                                        ext_id = "MyEnsemble" )
 
         client = Client()
-        url = reverse("api.ensemble.add_realisation", kwargs = {"ens_id" : ens.ext_id})
+        url = reverse("api.ensemble.add_realisation", kwargs = {"ens_id" : ens.id})
         response = client.post(url , {"sim_id" : 100000})
         self.assertEqual( response.status_code, 404)
 
@@ -85,7 +85,7 @@ class EnsembleTest(TransactionTestCase):
                                        ext_id = "MyEnsemble" )
 
         client = Client()
-        url = reverse("api.ensemble.add_simulation", kwargs = {"ens_id" : ens.ext_id})
+        url = reverse("api.ensemble.add_simulation", kwargs = {"ens_id" : ens.id})
         with TestAreaContext("summary"):
             self.sim_context.case.fwrite( )
             # Missing group => 403

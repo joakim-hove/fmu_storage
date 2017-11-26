@@ -35,7 +35,7 @@ class AddRealisation(View):
 
     def post(self, request, ens_id):
         try:
-            ens = Ensemble.objects.get( ext_id = ens_id )
+            ens = Ensemble.objects.get( id = ens_id )
         except:
             return HttpResponse( "No such ensemble:%s" % ens_id, status = 404)
 
@@ -57,7 +57,7 @@ class AddSimulation(View):
 
     def post(self, request, ens_id):
         try:
-            ens = Ensemble.objects.get( ext_id = ens_id )
+            ens = Ensemble.objects.get( id = ens_id )
         except:
             return HttpResponse( "No such ensemble:%s" % ens_id, status = 404)
 
