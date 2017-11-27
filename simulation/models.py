@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os.path
-
+import json
 from ecl.ecl import EclGrid, EclSum, EclFile
 
 from django.core.files import File
@@ -224,6 +224,28 @@ class Parameter(Model):
     name = CharField( max_length = 64 )
     value = FloatField( )
     simulation = ForeignKey( Simulation , on_delete = CASCADE )
+
+
+
+    @classmethod
+    def parse_parameters_txt(cls, content):
+        values = {}
+        for line in content.split("\n"):
+            key,value = line.split()
+            values[key] = value
+        return values
+
+
+    @classmethod
+    def loads(cls, simulation, content):
+        try:
+            values = json.loads(content)
+        except ValueError:
+            values = cls.parse_parameters_txt(content)
+
+        for key,str_value in values.iteritems():
+            Parameter.objects.create(name = key, value = float(str_value), simulation = simulation)
+
 
 
 @receiver(post_delete, sender=BaseFile)

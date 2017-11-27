@@ -41,3 +41,32 @@ class ParameterTest(TestCase):
         response = client.get( url )
         self.assertEqual( response.status_code , 404 )
 
+
+        with self.assertRaises(ValueError):
+            Parameter.loads( self.context.simulation, "PARAM1 = 100\n")
+
+        with self.assertRaises(ValueError):
+            Parameter.loads( self.context.simulation, "PARAM1 : 100\n")
+
+        with self.assertRaises(ValueError):
+            Parameter.loads( self.context.simulation, "PARAM1  100X\n")
+
+        Parameter.loads( self.context.simulation, "PARAM1 100\nPARAM2 200")
+
+        url = reverse( "api.simulation.parameters" , kwargs = {"id" : self.context.simulation.id })
+        response = client.get( url )
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads( response.content )
+        self.assertEqual( len(data) , 4 )
+        self.assertEqual( data["PARAM1"] , 100 )
+        self.assertEqual( data["PARAM2"] , 200 )
+
+        Parameter.loads( self.context.simulation, '{"PARAM3" :  300, "PARAM4" : 400}')
+        url = reverse( "api.simulation.parameters" , kwargs = {"id" : self.context.simulation.id })
+        response = client.get( url )
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads( response.content )
+        self.assertEqual( len(data) , 6 )
+        self.assertEqual( data["PARAM3"] , 300 )
+        self.assertEqual( data["PARAM4"] , 400 )
+
