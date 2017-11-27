@@ -70,3 +70,14 @@ class ParameterTest(TestCase):
         self.assertEqual( data["PARAM3"] , 300 )
         self.assertEqual( data["PARAM4"] , 400 )
 
+
+        url = reverse( "api.simulation.parameters" , kwargs = {"id" : self.context.simulation.id })
+        response = client.post(url, {"parameters" : "PARAM5 500\nPARAM6 600"})
+
+        response = client.get( url )
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads( response.content )
+        self.assertEqual( len(data) , 8 )
+        self.assertEqual( data["PARAM5"] , 500 )
+        self.assertEqual( data["PARAM6"] , 600 )
+

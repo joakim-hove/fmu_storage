@@ -91,6 +91,17 @@ class Parameters(View):
         return JsonResponse( simulation.parameters() )
 
 
+    def post(self, request, id):
+        try:
+            simulation = Simulation.objects.get( pk = int(id) )
+        except Simulation.DoesNotExist:
+            raise Http404("No summary with id:%s" % id)
+
+        Parameter.loads(simulation, request.POST["parameters"])
+        return JsonResponse( simulation.parameters() ) 
+
+
+
 class Upload(View):
     @classmethod
     def upload(cls, request, group):
