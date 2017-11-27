@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+import sys
+import os
+import grp
+import json
+import requests
+from argparse import ArgumentParser
+
+
+default_host =  None
+map_url = "/api/urls/"
+
+def file_group(fname):
+    stat = os.stat( fname )
+    group = grp.getgrgid( stat.st_gid )[0] 
+    return group
+
+
+def make_url(host, url):
+    full_url = "%s%s" % (host , url)
+    return full_url
+
+
+
+arg_parser = ArgumentParser( )
+arg_parser.add_argument("--host", dest="host", default=default_host, type=str)
+arg_parser.add_argument("--run-id", dest="run_id", type=str)
+arg_parser.add_argument("--name" , dest="name", type=str)
+arg_parser.add_argument("--iter", dest="iteration", type=int, default = 0)
+arg_parser.add_argument("--user", dest="user", type=str, default = os.getlogin())
+
+args = arg_parser.parse_args( sys.argv[1:] )
+host = args.host
+response = requests.get( make_url(host, map_url))
+if response.status_code != 200:
+    sys.exit("Could not download url map from: {}".format(make_url(host, map_url)))
+url_map = json.loads( response.text )
+
+url = url_map["api.ensemble.get_or_create"][0]
+response = requests.post( make_url(host, url),
+                          data = {"name" : args.name,
+                                  "iteration" : args.iteration,
+                                  "ext_id" : args.run_id,
+                                  "user" :  args.user})
+
+if response.status_code != 200:
+    print('Posting to {host} failed: "{text} [{status}]"'.format(host = host,
+                                                                 status = response.status_code,
+                                                                 text = response.text))
+
+else:
+    print("Created ensemble object with id:{}".format(response.content))
+
+

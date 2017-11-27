@@ -2,12 +2,13 @@
 import sys
 import os
 import grp
+import json
 import requests
+from argparse import ArgumentParser
 
 
-host = "http://127.0.0.1:8000"
-url = "/simulation/upload/"
-
+default_host =  None
+map_url = "/api/urls/"
 
 def file_group(fname):
     stat = os.stat( fname )
@@ -15,17 +16,43 @@ def file_group(fname):
     return group
 
 
-def make_url(url):
+def make_url(host, url):
     full_url = "%s%s" % (host , url)
     return full_url
 
-case = sys.argv[1]
-smspec_file = "%s.SMSPEC" % case
-unsmry_file = "%s.UNSMRY" % case
-status = requests.post( make_url(url),
-                        files = {"smspec_file" : open(smspec_file),
-                                 "unsmry_file" : open(unsmry_file)},
-                        data = {"group" : file_group(smspec_file)})
-print status
+
+
+arg_parser = ArgumentParser( )
+arg_parser.add_argument("--host", dest="host", default=default_host, type=str)
+arg_parser.add_argument("--ens-id", dest="ens_id", type=int)
+arg_parser.add_argument("case", nargs='+', type=str)
+
+args = arg_parser.parse_args( sys.argv[1:] )
+host = args.host
+response = requests.get( make_url(host, map_url))
+if response.status_code != 200:
+    sys.exit("Could not download url map from: {}".format(make_url(host, map_url)))
+url_map = json.loads( response.text )
+
+
+ens_id = args.ens_id
+
+for case in args.case:
+    smspec_file = "%s.SMSPEC" % case
+    unsmry_file = "%s.UNSMRY" % case
+    url = url_map["api.ensemble.add_simulation"][0]
+    response = requests.post( make_url(host, url.format( ens_id = ens_id)),
+                              files = {"smspec_file" : open(smspec_file),
+                                       "unsmry_file" : open(unsmry_file)},
+                              data = {"group" : file_group(smspec_file),
+                                      "iens" : 1})
+
+    if response.status_code != 200:
+        print('Posting to {host} failed: "{text} [{status}]"'.format(host = host,
+                                                                status = response.status_code,
+                                                                text = response.text))
+
+    else:
+        print("Created simulation object with id:{}".format(response.content))
 
 
