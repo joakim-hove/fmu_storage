@@ -114,6 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -134,4 +135,5 @@ MEDIA_ROOT = os.path.join( os.environ.get("STORAGE_ROOT"), "fmu_storage" )
 if MEDIA_ROOT is None:
     raise Exception("The environment variable STORAGE_ROOT must be set")
 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 0
 STATIC_ROOT = os.path.join( BASE_DIR , "staticfiles")
