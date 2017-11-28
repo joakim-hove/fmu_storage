@@ -246,7 +246,13 @@ class Parameter(Model):
             values = cls.parse_parameters_txt(content)
 
         for key,str_value in values.iteritems():
-            Parameter.objects.update_or_create(name = key, value = float(str_value), simulation = simulation)
+            try:
+                param = Parameter.objects.get( name = key, simulation = simulation)
+            except Parameter.DoesNotExist:
+                param = Parameter( name = key,
+                                   simulation = simulation)
+            param.value = float(str_value)
+            param.save()
 
 
 
