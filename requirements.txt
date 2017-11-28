@@ -4,3 +4,4 @@ numpy
 six
 whitenoise
 requests
+django-extensions

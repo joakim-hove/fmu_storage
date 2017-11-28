@@ -81,3 +81,12 @@ class ParameterTest(TestCase):
         self.assertEqual( data["PARAM5"] , 500 )
         self.assertEqual( data["PARAM6"] , 600 )
 
+        response = client.post(url, {"parameters" : "PARAM5 700\nPARAM6 800"})
+
+        response = client.get( url )
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads( response.content )
+        self.assertEqual( len(data) , 8 )
+        self.assertEqual( data["PARAM5"] , 700 )
+        self.assertEqual( data["PARAM6"] , 800 )
+

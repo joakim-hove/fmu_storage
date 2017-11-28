@@ -75,6 +75,9 @@ class AddSimulation(View):
         except (ValueError,IOError) as error:
             return HttpResponse( str(error), status = 400 )
 
+        if "parameters" in request.POST:
+            Parameter.loads( sim, request.POST["parameters"])
+
         realisation = Realisation.objects.create( iens = iens,
                                                   simulation = sim,
                                                   ensemble = ens )

@@ -219,12 +219,14 @@ class Simulation(Model):
         self.save( )
 
 
-
 class Parameter(Model):
     name = CharField( max_length = 64 )
     value = FloatField( )
     simulation = ForeignKey( Simulation , on_delete = CASCADE )
 
+
+    class Meta:
+        unique_together = ("name","simulation")
 
 
     @classmethod
@@ -244,7 +246,7 @@ class Parameter(Model):
             values = cls.parse_parameters_txt(content)
 
         for key,str_value in values.iteritems():
-            Parameter.objects.create(name = key, value = float(str_value), simulation = simulation)
+            Parameter.objects.update_or_create(name = key, value = float(str_value), simulation = simulation)
 
 
 
