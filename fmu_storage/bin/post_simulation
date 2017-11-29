@@ -10,7 +10,7 @@ from argparse import ArgumentParser
 default_host =  None
 map_url = "/api/urls/"
 
-def file_group(fname):
+ def file_group(fname):
     stat = os.stat( fname )
     group = grp.getgrgid( stat.st_gid )[0] 
     return group
@@ -21,6 +21,8 @@ def make_url(host, url):
     return full_url
 
 
+def read_parameters(path):
+    return None
 
 arg_parser = ArgumentParser( )
 arg_parser.add_argument("--host", dest="host", default=default_host, type=str)
@@ -40,12 +42,19 @@ ens_id = args.ens_id
 for case in args.case:
     smspec_file = "%s.SMSPEC" % case
     unsmry_file = "%s.UNSMRY" % case
+    path = os.path.dirname( smspec_file )
+    parameters = read_parameters(path)
+
     url = url_map["api.ensemble.add_simulation"][0]
+    data = {"group" : file_group(smspec_file), "iens" : 1}
+    params = read_parameters(path)
+    if params:
+        data["parameters"] = params
+
     response = requests.post( make_url(host, url.format( ens_id = ens_id)),
                               files = {"smspec_file" : open(smspec_file),
                                        "unsmry_file" : open(unsmry_file)},
-                              data = {"group" : file_group(smspec_file),
-                                      "iens" : 1})
+                              data = data)
 
     if response.status_code != 200:
         print('Posting to {host} failed: "{text} [{status}]"'.format(host = host,

@@ -30,5 +30,21 @@ class Realisation(Model):
     simulation = OneToOneField( Simulation , on_delete = CASCADE )
     ensemble = ForeignKey( Ensemble , on_delete = CASCADE )
 
+
+    class Meta:
+        unique_together = ("iens", "ensemble")
+
+
     def __unicode__(self):
         return "%s:%d" % (self.ensemble.name, self.iens)
+
+    @classmethod
+    def update_or_create(cls, ensemble, iens, simulation):
+        try:
+            realisation = Realisation.objects.get( iens = iens, ensemble = ensemble)
+        except Realisation.DoesNotExist:
+            realisation = Realisation(iens = iens, ensemble = ensemble)
+
+        realisation.simulation = simulation
+        realisation.save()
+        return realisation

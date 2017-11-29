@@ -46,9 +46,7 @@ class AddRealisation(View):
         except KeyError,Simulation.DoesNotExist:
             return HttpResponse( "No such simulation ???", status = 404)
 
-        realisation = Realisation.objects.create( iens = iens,
-                                                  simulation = sim,
-                                                  ensemble = ens )
+        realisation = Realisation.update_or_create(ens, iens, sim)
 
         return HttpResponse( realisation.id, status = 200)
 
@@ -78,9 +76,6 @@ class AddSimulation(View):
         if "parameters" in request.POST:
             Parameter.loads( sim, request.POST["parameters"])
 
-        realisation = Realisation.objects.create( iens = iens,
-                                                  simulation = sim,
-                                                  ensemble = ens )
-
+        realisation = Realisation.update_or_create(ens, iens, sim)
         return HttpResponse( realisation.id, status = 200)
 
