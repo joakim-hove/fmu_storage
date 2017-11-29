@@ -107,8 +107,23 @@ class EnsembleTest(TransactionTestCase):
                                            "iens" : 10})
 
             self.assertEqual( response.status_code , 200 )
-            real_id = int(response.content)
-            real = Realisation.objects.get( pk = real_id )
+            real_id1 = int(response.content)
+            real = Realisation.objects.get( pk = real_id1 )
+            sim_id1 = real.simulation.id
+
+            response = client.post( url , {"smspec_file" : open("CASE.SMSPEC"),
+                                           "unsmry_file" : open("CASE.UNSMRY"),
+                                           "group" : self.sim_context.group,
+                                           "iens" : 10})
+
+            self.assertEqual( response.status_code , 200 )
+            real_id2 = int(response.content)
+            real = Realisation.objects.get( pk = real_id2 )
+            sim_id2 = real.simulation.id
+
+            self.assertEqual( real_id1, real_id2)
+            self.assertNotEqual( sim_id1, sim_id2)
+
 
 
     def test_ensemble_view(self):

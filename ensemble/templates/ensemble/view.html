@@ -24,7 +24,7 @@
         </table>
         Realisations: <div>
             {% for real in ensemble.realisations %}
-            <a href="{% url 'ensemble.realisation.detail_view' id=real.id %}"> {{ real.id }}</a>&nbsp; 
+            <a href="{% url 'ensemble.realisation.detail_view' id=real.id %}"> {{ real.iens }}</a>&nbsp; 
             {% endfor %}
         </div> 
 
