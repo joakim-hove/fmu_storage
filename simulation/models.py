@@ -233,8 +233,9 @@ class Parameter(Model):
     def parse_parameters_txt(cls, content):
         values = {}
         for line in content.split("\n"):
-            key,value = line.split()
-            values[key] = value
+            if line:
+                key,value = line.split()
+                values[key] = value
         return values
 
 

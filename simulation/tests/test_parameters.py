@@ -81,7 +81,7 @@ class ParameterTest(TestCase):
         self.assertEqual( data["PARAM5"] , 500 )
         self.assertEqual( data["PARAM6"] , 600 )
 
-        response = client.post(url, {"parameters" : "PARAM5 700\nPARAM6 800"})
+        response = client.post(url, {"parameters" : "PARAM5 700\nPARAM6 800\n"})
 
         response = client.get( url )
         self.assertEqual( response.status_code , 200 )
