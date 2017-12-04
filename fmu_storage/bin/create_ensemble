@@ -49,6 +49,6 @@ if response.status_code != 200:
                                                                  text = response.text))
 
 else:
-    print("Created ensemble object with id:{}".format(response.content))
+    print("Created ensemble object with id:{ens_id}".format(ens_id = response.text))
 
 
