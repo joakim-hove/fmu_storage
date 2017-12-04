@@ -10,7 +10,7 @@ from argparse import ArgumentParser
 default_host =  None
 map_url = "/api/urls/"
 
- def file_group(fname):
+def file_group(fname):
     stat = os.stat( fname )
     group = grp.getgrgid( stat.st_gid )[0] 
     return group
