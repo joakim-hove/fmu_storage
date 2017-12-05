@@ -27,6 +27,7 @@ def read_parameters(path):
 arg_parser = ArgumentParser( )
 arg_parser.add_argument("--host", dest="host", default=default_host, type=str)
 arg_parser.add_argument("--ens-id", dest="ens_id", type=int)
+arg_parser.add_argument("--iens", dest="iens", type=int)
 arg_parser.add_argument("case", nargs='+', type=str)
 
 args = arg_parser.parse_args( sys.argv[1:] )
@@ -38,6 +39,7 @@ url_map = json.loads( response.text )
 
 
 ens_id = args.ens_id
+iens = args.iens
 
 for case in args.case:
     smspec_file = "%s.SMSPEC" % case
@@ -46,7 +48,7 @@ for case in args.case:
     parameters = read_parameters(path)
 
     url = url_map["api.ensemble.add_simulation"][0]
-    data = {"group" : file_group(smspec_file), "iens" : 1}
+    data = {"group" : file_group(smspec_file), "iens" : iens}
     params = read_parameters(path)
     if params:
         data["parameters"] = params
