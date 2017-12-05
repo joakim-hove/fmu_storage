@@ -124,6 +124,15 @@ class EnsembleTest(TransactionTestCase):
             self.assertEqual( real_id1, real_id2)
             self.assertNotEqual( sim_id1, sim_id2)
 
+            url = reverse("api.ensemble.info", kwargs = {"ens_id" : 1000823723})
+            response = client.get(url)
+            self.assertEqual(response.status_code, 404)
+
+            url = reverse("api.ensemble.info", kwargs = {"ens_id" : ens.id})
+            response = client.get(url)
+            self.assertEqual(response.status_code, 200)
+            data = response.json() 
+
 
 
     def test_ensemble_view(self):
@@ -143,7 +152,7 @@ class EnsembleTest(TransactionTestCase):
         url = reverse("ensemble.detail_view", kwargs = {"id" : ens.id})
         response = client.get(url)
         self.assertEqual(response.status_code, 200)
-        
+
         url = reverse("ensemble.realisation.detail_view", kwargs = {"id" : 100000})
         response = client.get(url)
         self.assertEqual(response.status_code, 404)

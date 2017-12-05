@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from ensemble.models import *
 from simulation.api.views import Upload as Simulation
@@ -79,3 +79,28 @@ class AddSimulation(View):
         realisation = Realisation.update_or_create(ens, iens, sim)
         return HttpResponse( realisation.id, status = 200)
 
+
+
+class Summary(View):
+
+    def get(self, request, ens_id):
+        try:
+            ens = Ensemble.objects.get(id = ens_id)
+        except Ensemble.DoesNotExist:
+            return HttpResponse("No such ensemble:{}".format(ens_id), status = 404)
+
+        result = {"name"    : ens.name,
+                  "id"      : ens.id,
+                  "run_id"  : ens.ext_id,
+                  "user"    : ens.user,
+                  "created" : ens.creation_time}
+
+        realisations = {}
+        for real in Realisation.objects.filter(ensemble = ens):
+            simulation = real.simulation
+            summary_id = simulation.summary.id
+
+            realisations[real.iens] = {"simulation" : {"id" : simulation.id,  "summary" : summary_id }}
+
+        result["realisations"] = realisations
+        return JsonResponse(result)

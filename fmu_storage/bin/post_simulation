@@ -50,7 +50,7 @@ for case in args.case:
     url = url_map["api.ensemble.add_simulation"][0]
     data = {"group" : file_group(smspec_file), "iens" : iens}
     params = read_parameters(path)
-    if params:
+    if params: 
         data["parameters"] = params
 
     response = requests.post( make_url(host, url.format( ens_id = ens_id)),
@@ -64,6 +64,10 @@ for case in args.case:
                                                                 text = response.text))
 
     else:
-        print("Created simulation object with id:{}".format(response.content))
-
-
+        print("Created realisation object with id:{}".format(response.content))
+        url = url_map["api.ensemble.info"][0]
+        response = requests.get( make_url(host, url.format(ens_id = ens_id)))
+        info = json.loads(response.text)
+        summary_id = info["realisatons"][iens]["simulation"]["summary"]
+        summary_url = url_map["api.simulation.summary.data"]
+        print("Summary data available at url: {}".format(summary_url))
