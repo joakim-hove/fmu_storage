@@ -20,10 +20,11 @@ class SummaryData(View):
             raise HttpResponseServerError("NO id supplied for summary")
 
         try:
-            summary = Summary.objects.get( pk = int(id) )
-        except Summary.DoesNotExist:
+            simulation = Simulation.objects.get( pk = int(id) )
+        except Simulation.DoesNotExist:
             raise Http404("No summary with id:%s" % id)
 
+        summary = simulation.summary
         ecl_sum = summary.data( )
         sum_keywords = EclSumKeyWordVector(ecl_sum)
         for key in request.GET.getlist("key"):
@@ -63,10 +64,11 @@ class SummaryKeys(View):
             raise HttpResponseServerError("NO id supplied for summary")
 
         try:
-            summary = Summary.objects.get( pk = int(id) )
-        except Summary.DoesNotExist:
+            sim = Simulation.objects.get( pk = int(id) )
+        except Simulation.DoesNotExist:
             raise Http404("No summary with id:%s" % id)
 
+        summary = sim.summary
         ecl_sum = summary.data( )
         if "pattern" in request.GET:
             keys = []
