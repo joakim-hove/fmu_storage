@@ -24,7 +24,17 @@ def make_url(host, url):
 
 
 def read_parameters(path):
+    parameters_json = os.path.join(path, "parameters.json")
+    if os.path.isfile(parameters_json):
+        return open(parameters_json).read()
+
+    parameters_txt = os.path.join(path, "parameters.txt")
+    if os.path.isfile(parameters_txt):
+        return open(parameters_txt).read()
+
     return None
+
+
 
 arg_parser = ArgumentParser( )
 arg_parser.add_argument("--host", dest="host", default=default_host, type=str)
@@ -52,7 +62,7 @@ for case in args.case:
     url = url_map["api.ensemble.add_simulation"][0]
     data = {"group" : file_group(smspec_file), "iens" : iens}
     params = read_parameters(path)
-    if params: 
+    if params:
         data["parameters"] = params
 
     response = requests.post( make_url(host, url.format( ens_id = ens_id)),
@@ -76,6 +86,7 @@ for case in args.case:
 
         summary_url = make_url(host, summary_url_fmt.format( id = simulation_id))
         parameter_url = make_url(host, parameter_url_fmt.format( id = simulation_id))
+        query_string = "keys=F*"
         print("URLs:")
-        print(" -- Summary data...: {}".format(summary_url))
+        print(" -- Summary data...: {}?{}".format(summary_url ,query_string))
         print(" -- Parameters.....: {}".format(parameter_url))
