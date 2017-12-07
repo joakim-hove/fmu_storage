@@ -68,8 +68,12 @@ for case in args.case:
         url = url_map["api.ensemble.info"][0]
         response = requests.get( make_url(host, url.format(ens_id = ens_id)))
         info = json.loads(response.text)
-        summary_id = info["realisations"][str(iens)]["simulation"]["id"]
-        url_fmt = url_map["api.simulation.summary.data"][0]
+        simulation_id = info["realisations"][str(iens)]["simulation"]["id"]
+        summary_url_fmt = url_map["api.simulation.summary.data"][0]
+        parameter_url_fmt = url_map["api.simulation.parameters"][0]
 
-        summary_url = make_url(host, url_fmt.format( id = summary_id))
-        print("Summary data available at url: {}".format(summary_url))
+        summary_url = make_url(host, summary_url_fmt.format( id = simulation_id))
+        parameter_url = make_url(host, parameter_url_fmt.format( id = simulation_id)
+        print("URLs:")
+        print(" -- Summary data...: {}".format(summary_url))
+        print(" -- Parameters.....: {}".format(parameter_url))

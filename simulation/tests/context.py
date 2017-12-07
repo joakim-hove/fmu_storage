@@ -38,7 +38,7 @@ class TestContext(object):
             case.fwrite( )
             self.summary = Summary.create( "CASE.SMSPEC" , "CASE.UNSMRY" , self.group )
 
-        self.simulation = Simulation.create( summary = self.summary )
+        self.simulation = Simulation.create( summary = self.summary, parameters = [("CPARAM1", 100), ("CPARAM2", 200)] )
         self.grid = EclGridGenerator.create_rectangular( (10,10,10),(1,1,1) )
 
 

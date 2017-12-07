@@ -23,7 +23,7 @@ class ParameterTest(TestCase):
 
         self.context.simulation.add_parameter( "MULTPV2" , 2.0 )
         p = self.context.simulation.parameters( )
-        self.assertEqual( len(p) , 2 )
+        self.assertEqual( len(p) , 4 )
         self.assertEqual( p["MULTPV"] , 1.0 )
         self.assertEqual( p["MULTPV2"] , 2.0 )
 
@@ -32,7 +32,7 @@ class ParameterTest(TestCase):
         response = client.get( url )
         self.assertEqual( response.status_code , 200 )
         data = json.loads( response.content )
-        self.assertEqual( len(data) , 2 )
+        self.assertEqual( len(data) , 4 )
         self.assertEqual( data["MULTPV"] , 1.0 )
         self.assertEqual( data["MULTPV2"] , 2.0 )
 
@@ -57,7 +57,7 @@ class ParameterTest(TestCase):
         response = client.get( url )
         self.assertEqual( response.status_code , 200 )
         data = json.loads( response.content )
-        self.assertEqual( len(data) , 4 )
+        self.assertEqual( len(data) , 6 )
         self.assertEqual( data["PARAM1"] , 100 )
         self.assertEqual( data["PARAM2"] , 200 )
 
@@ -66,7 +66,7 @@ class ParameterTest(TestCase):
         response = client.get( url )
         self.assertEqual( response.status_code , 200 )
         data = json.loads( response.content )
-        self.assertEqual( len(data) , 6 )
+        self.assertEqual( len(data) , 8 )
         self.assertEqual( data["PARAM3"] , 300 )
         self.assertEqual( data["PARAM4"] , 400 )
 
@@ -77,7 +77,7 @@ class ParameterTest(TestCase):
         response = client.get( url )
         self.assertEqual( response.status_code , 200 )
         data = json.loads( response.content )
-        self.assertEqual( len(data) , 8 )
+        self.assertEqual( len(data) , 10 )
         self.assertEqual( data["PARAM5"] , 500 )
         self.assertEqual( data["PARAM6"] , 600 )
 
@@ -86,7 +86,7 @@ class ParameterTest(TestCase):
         response = client.get( url )
         self.assertEqual( response.status_code , 200 )
         data = json.loads( response.content )
-        self.assertEqual( len(data) , 8 )
+        self.assertEqual( len(data) , 10 )
         self.assertEqual( data["PARAM5"] , 700 )
         self.assertEqual( data["PARAM6"] , 800 )
 

@@ -21,14 +21,14 @@ class SimulationTest(TestCase):
         self.context = TestContext( )
 
     def test_create(self):
-        params = {"P1" : 100,
-                  "P2" : 200,
-                  "P3" : 300}
+        params = [("P1", 100),
+                  ("P2", 200),
+                  ("P3", 300)]
         sim = Simulation.create( self.context.summary, parameters = params)
         params_get = sim.parameters( )
-        for key in params:
+        for key,value in params:
             self.assertTrue(key in params_get)
-            self.assertEqual( params_get[key] , params[key] )
+            self.assertEqual( params_get[key] , value )
 
 
     def test_summary(self):
@@ -62,6 +62,21 @@ class SimulationTest(TestCase):
         self.assertEqual( response.status_code , 200 )
         data = json.loads( response.content )
         self.assertEqual( len(data), 3 )
+
+        url = reverse("api.simulation.parameters", kwargs = {"id" : 1000000})
+        response = client.get( url )
+        self.assertEqual( response.status_code , 404 )
+
+        url = reverse("api.simulation.parameters", kwargs = {"id" : self.context.simulation.id})
+        response = client.get( url )
+        self.assertEqual( response.status_code , 200 )
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data["CPARAM1"], 100)
+        self.assertEqual(data["CPARAM2"], 200)
+
+
+
 
 
 

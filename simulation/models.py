@@ -176,7 +176,7 @@ class Simulation(Model):
                                          init = init)
 
         if parameters:
-            for (param,value) in parameters.items():
+            for (param,value) in parameters:
                 simulation.add_parameter( param , value )
 
         return simulation
