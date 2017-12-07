@@ -158,3 +158,16 @@ class EnsembleTest(TransactionTestCase):
         self.assertEqual(response.status_code, 404)
 
 
+    def test_ensemble_simualations(self):
+        ens_size = 10
+        ens = Ensemble.objects.create( iteration = 0,
+                                       name = "MyEnsemble",
+                                       user = "user",
+                                       ext_id = "adfa" )
+        for iens in range(ens_size):
+            sim = SimulationContext.random_simulation()
+            real = Realisation.objects.create(iens = iens,
+                                              simulation = sim,
+                                               ensemble = ens)
+
+
