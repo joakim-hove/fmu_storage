@@ -80,8 +80,22 @@ class AddSimulation(View):
         return HttpResponse( realisation.id, status = 200)
 
 
+class Realisations(View):
 
-class Summary(View):
+    def get(self, request, ens_id):
+        try:
+            ens = Ensemble.objects.get(id = ens_id)
+        except Ensemble.DoesNotExist:
+            return HttpResponse("No such ensemble:{}".format(ens_id), status = 404)
+
+        realisations = {}
+        for real in Realisation.objects.filter( ensemble = ens ):
+            realisations[real.id] = real.simulation.id
+
+        return JsonResponse(realisations)
+
+
+class EnsembleInfo(View):
 
     def get(self, request, ens_id):
         try:
@@ -96,7 +110,7 @@ class Summary(View):
                   "created" : ens.creation_time}
 
         realisations = {}
-        for real in Realisation.objects.filter(ensemble = ens):
+        for real in ens.realisations(): 
             simulation = real.simulation
             summary_id = simulation.summary.id
 
@@ -104,3 +118,29 @@ class Summary(View):
 
         result["realisations"] = realisations
         return JsonResponse(result)
+
+
+class SummaryData(View):
+    time_interval = "3M"
+
+
+    def get(self, request, ens_id):
+        try:
+            ens = Ensemble.objects.get(id = ens_id)
+        except Ensemble.DoesNotExist:
+            return HttpResponse("No such ensemble:{}".format(ens_id), status = 404)
+
+        time_interval = request.GET.get("time_interval", SummaryData.time_interval)
+
+        results = {}
+        for real in ens.realisations():
+            summary = real.simulation.summary
+            status, result = summary.GET(request.GET.getlist("key"),
+                                          request.GET.getlist("keys"),
+                                          time_interval)
+            if status != 200:
+                return HttpResponse(result, status = status)
+
+            results[real.iens] = result
+
+        return JsonResponse(results)

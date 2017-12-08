@@ -17,7 +17,7 @@ class SummaryData(View):
 
     def get(self, request, id = None):
         if id is None:
-            raise HttpResponseServerError("NO id supplied for summary")
+            raise HttpResponseServerError("No id supplied for summary")
 
         try:
             simulation = Simulation.objects.get( pk = int(id) )
@@ -25,38 +25,14 @@ class SummaryData(View):
             raise Http404("No summary with id:%s" % id)
 
         summary = simulation.summary
-        ecl_sum = summary.data( )
-        sum_keywords = EclSumKeyWordVector(ecl_sum)
-        for key in request.GET.getlist("key"):
-            if key in ecl_sum:
-                sum_keywords.add_keyword( key )
-            else:
-                raise Http404("No such key: %s" % key)
+        status, result = summary.GET(request.GET.getlist("key"), request.GET.getlist("keys"), request.GET.get("time_interval"))
 
-        for key_pattern in request.GET.getlist("keys"):
-            sum_keywords.add_keywords( key_pattern )
-
-        if "time_interval" in request.GET:
-            try:
-                time_list = ecl_sum.time_range( interval = request.GET["time_interval"], extend_end = False )
-            except TypeError:
-                return HttpResponse( status = 400 )
+        if status == 200:
+            return JsonResponse( result )
         else:
-            report_only = True
-            time_list = ecl_sum.alloc_time_vector( report_only )
+            return HttpResponse( result, status = status )
 
-        result = { "time" : [ t.datetime() for t in time_list ] }
-        data = {}
-        for key in sum_keywords:
-            data[key] = []
 
-        for t in time_list:
-            d = ecl_sum.get_interp_row( sum_keywords , t )
-            for i in range(len(sum_keywords)):
-                data[ sum_keywords[i] ].append( d[i] )
-
-        result["data"] = data
-        return JsonResponse( result )
 
 class SummaryKeys(View):
     def get(self, request, id = None):

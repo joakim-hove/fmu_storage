@@ -168,6 +168,30 @@ class EnsembleTest(TransactionTestCase):
             sim = SimulationContext.random_simulation()
             real = Realisation.objects.create(iens = iens,
                                               simulation = sim,
-                                               ensemble = ens)
+                                              ensemble = ens)
 
+        url = reverse("api.ensemble.realisations", kwargs = {"ens_id" : ens.id})
+        client = Client( )
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), ens_size)
+        for real_id,sim_id in data.iteritems():
+            real = Realisation.objects.get(pk = int(real_id))
+            sim = Simulation.objects.get(pk = sim_id)
+            self.assertEqual( sim_id , sim.id)
 
+        url = reverse("api.ensemble.simulations.summary.data", kwargs = {"ens_id" : 91837})
+        response = client.get(url)
+        self.assertEqual( response.status_code, 404)
+
+        url = reverse("api.ensemble.simulations.summary.data", kwargs = {"ens_id" : ens.id})
+        response = client.get(url, {"key" : "FOPT"})
+        self.assertEqual( response.status_code, 200)
+        data = json.loads( response.content )
+        for iens in range(ens_size):
+            self.assertIn(str(iens), data)
+            real = data[str(iens)]
+            self.assertIn("FOPT", real["data"])
+            self.assertIn("time", real)
+            

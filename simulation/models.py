@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import os.path
 import json
-from ecl.ecl import EclGrid, EclSum, EclFile
+from ecl.ecl import EclGrid, EclSum, EclFile, EclSumKeyWordVector
 
 from django.core.files import File
 from django.db.models.signals import post_delete, pre_delete
@@ -140,6 +140,40 @@ class Summary(Model):
     def __unicode__(self):
         return os.path.splitext( self.smspec_file.input_name )[0]
 
+
+    def GET(self, key_list, key_pattern_list, time_interval = None):
+        ecl_sum = self.data( )
+        sum_keywords = EclSumKeyWordVector(ecl_sum)
+        for key in key_list:
+            if key in ecl_sum:
+                sum_keywords.add_keyword( key )
+            else:
+                return (404, "No such key: {}".format(key))
+
+        for key_pattern in key_pattern_list:
+            sum_keywords.add_keywords( key_pattern )
+
+        if time_interval:
+            try:
+                time_list = ecl_sum.time_range( interval = time_interval, extend_end = False )
+            except TypeError:
+                return (400, "Invalid time interval: {}".format(time_interval)) 
+        else:
+            report_only = True
+            time_list = ecl_sum.alloc_time_vector( report_only )
+
+        result = { "time" : [ t.datetime() for t in time_list ] }
+        data = {}
+        for key in sum_keywords:
+            data[key] = []
+
+        for t in time_list:
+            d = ecl_sum.get_interp_row( sum_keywords , t )
+            for i in range(len(sum_keywords)):
+                data[ sum_keywords[i] ].append( d[i] )
+
+        result["data"] = data
+        return (200, result)
 
     @classmethod
     def create(self, smspec_file, unsmry_file, owner_group):
