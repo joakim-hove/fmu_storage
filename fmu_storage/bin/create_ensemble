@@ -47,7 +47,17 @@ if response.status_code != 200:
     print('Posting to {host} failed: "{text} [{status}]"'.format(host = host,
                                                                  status = response.status_code,
                                                                  text = response.text))
-
 else:
-    print("Created ensemble object with id:{ens_id}".format(ens_id = response.text))
+    ens_id = response.text
+    print("Created ensemble object with id:{ens_id}".format(ens_id = ens_id))
+
+    info_url_fmt = url_map["api.ensemble.info"][0]
+    info_url = make_url(host, info_url_fmt.format(ens_id = ens_id))
+
+    summary_url_fmt = url_map["api.ensemble.simulations.summary.data"][0]
+    summary_url = make_url(hist, summary_url_fmt.format(ens_id = ens_id))
+    query_string = "keys=F*"
+    print("URLs:")
+    print(" -- Information.....: {}".format(info_url))
+    print(" -- Summary data....: {}?{}".format(summary_url ,query_string))
 
