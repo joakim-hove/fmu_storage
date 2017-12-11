@@ -55,7 +55,7 @@ else:
     info_url = make_url(host, info_url_fmt.format(ens_id = ens_id))
 
     summary_url_fmt = url_map["api.ensemble.simulations.summary.data"][0]
-    summary_url = make_url(hist, summary_url_fmt.format(ens_id = ens_id))
+    summary_url = make_url(host, summary_url_fmt.format(ens_id = ens_id))
     query_string = "keys=F*"
     print("URLs:")
     print(" -- Information.....: {}".format(info_url))
